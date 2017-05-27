@@ -18,15 +18,15 @@ class AddWebsiteSchema extends Migration
 
             $table->string('name');
             $table->string('type', 20);
-            $table->string('servername');
+            $table->string('servername')->default('');
             $table->boolean('is_on')->default(false);
 
-            $table->string('username');
-            $table->string('password');
-            $table->string('apache_path');
-            $table->string('git_root');
+            $table->string('username')->default('');
+            $table->string('password')->default('');
+            $table->string('apache_path')->default('');
+            $table->string('git_root')->default('');
             $table->string('checkout')->default("master");
-            $table->string('document_root');
+            $table->string('document_root')->default('');
 
             $table->string('deploy_scripts');
 
