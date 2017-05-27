@@ -16,11 +16,11 @@ class Website extends Model
         parent::creating(function(Website $website) {
             # Create Web Username Owner from Name
             $website->username = str_slug($website->name);
-            $website->password = Hash::make(str_random(8));
+            $website->password = substr(str_replace("$", "", Hash::make(str_random(8))), 0, 8);
             # Check for Unique
             while (true) {
                 $result = shell_exec("grep -c '^{$website->username}:' /etc/passwd");
-                if ($result == "0") {
+                if ($result == "0\n") {
                     # Stop While
                     break;
                 } else {
@@ -29,7 +29,7 @@ class Website extends Model
             }
 
             # Create Website User in System
-            passthru("useradd -p `mkpasswd \"{$website->password}\"` -d /home/\"{$website->username}\" -m -g users -s /bin/bash \"{$website->username}\"");
+            shell_exec("useradd -p `mkpasswd \"{$website->password}\"` -d /home/\"{$website->username}\" -m -g users -s /bin/bash \"{$website->username}\"");
 
             # Create Directory to Store Deploy source and Version Control
             $website->document_root = "/home/{$website->username}/deploy";
