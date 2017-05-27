@@ -5,7 +5,7 @@
     <div class="ui segment">
         <div class="ui three column grid">
             <div class="column">
-                <a class="ui button green basic">Tạo mới</a>
+                <a class="ui button green basic" href="{{ url()->action('WebsiteController@create') }}">Tạo mới</a>
             </div>
         </div>
         <div class="ui three column grid">

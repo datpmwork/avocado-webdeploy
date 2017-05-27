@@ -51,6 +51,7 @@ class ProcessNewWebsite implements ShouldQueue
 
         # Change Folder Permission
         chmodr("/home/{$website->username}/", 0760);
+        chmod($deploy_path, 0770);
         chgrpr("/home/{$website->username}/", $website->username);
         chownr("/home/{$website->username}/", $website->username);
     }

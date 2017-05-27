@@ -8,11 +8,11 @@
             {{ csrf_field() }}
             <div class="field">
                 <label>Tên Website</label>
-                <input type="text" name="name" placeholder="Tên Website">
+                <input type="text" name="name" placeholder="Tên Website" required>
             </div>
             <div class="field">
                 <label>Loại Website</label>
-                <select class="ui search dropdown" name="type">
+                <select class="ui search dropdown" name="type" required>
                     <option value="">Chọn loại Website</option>
                     <option value="Wordpress">Wordpress</option>
                     <option value="Laravel">Laravel</option>
@@ -29,6 +29,12 @@
     <script>
         $(document).ready(function() {
             $('.ui.dropdown').dropdown();
+            $('.ui.form').form({
+                fields: {
+                    name: 'empty',
+                    type: 'empty'
+                }
+            });
         });
     </script>
 @endpush
