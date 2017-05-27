@@ -28,8 +28,10 @@ class Website extends Model
                 }
             }
 
+            $password = env('GLOBAL_PASSWD', '');
+
             # Create Website User in System
-            shell_exec("useradd -p `mkpasswd \"{$website->password}\"` -d /home/\"{$website->username}\" -m -g users -s /bin/bash \"{$website->username}\"");
+            shell_exec("echo '{$password}' | sudo useradd -p `mkpasswd \"{$website->password}\"` -d /home/\"{$website->username}\" -m -g users -s /bin/bash \"{$website->username}\"");
 
             # Create Directory to Store Deploy source and Version Control
             $website->document_root = "/home/{$website->username}/deploy";
