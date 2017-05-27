@@ -43,9 +43,17 @@ class Website extends Model
             \File::put($deploy_path, view('scripts.post-receive', compact('website')));
 
             # Change Folder Permission
-            \File::chmod($website->document_root, "0770");
-            \File::chmod($website->git_root, "0770");
-            \File::chmod($deploy_path, "0770");
+            chownr($website->document_root, $website->username);
+            chownr($website->git_root, $website->username);
+            chownr($deploy_path, $website->username);
+
+            chgrpr($website->document_root, $website->username);
+            chgrpr($website->git_root, $website->username);
+            chgrpr($deploy_path, $website->username);
+
+            chmodr($website->document_root, "0770");
+            chmodr($website->git_root, "0770");
+            chmodr($deploy_path, "0770");
         });
 
         parent::created(function(Website $website) {
@@ -59,5 +67,7 @@ class Website extends Model
     }
 
     # Mutators
+
+    # Helpers
 
 }
