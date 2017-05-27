@@ -28,12 +28,11 @@ class Website extends Model
                     $website->username .= "-" . substr(Hash::make(str_random(8)), 0, 3);
                 }
             }
-
-            # Process Create Init Directory
-            dispatch(new ProcessNewWebsite($website));
         });
 
         parent::created(function(Website $website) {
+            # Process Create Init Directory
+            dispatch(new ProcessNewWebsite($website));
             # Create Sample Virtual Host Config And Store in Storage
             if ($website->type == "Laravel") $website->document_root .= "/public";
 
