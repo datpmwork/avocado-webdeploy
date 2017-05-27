@@ -38,7 +38,7 @@ class Website extends Model
             \File::makeDirectory($website->document_root, 770, false, true);
 
             # Git Init Bare
-            passthru("cd {$website->git_root}; git init --bare");
+            exec("cd {$website->git_root}; git init --bare;");
 
             # Create Deploy Code
             $deploy_path = "{$website->git_root}/hooks/post-receive";
