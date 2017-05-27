@@ -19,6 +19,7 @@ class WebsiteController extends Controller
     }
 
     public function store(Request $request) {
-        dd($request->all());
+        Website::create($request->all());
+        return redirect()->action('HomeController@index');
     }
 }
