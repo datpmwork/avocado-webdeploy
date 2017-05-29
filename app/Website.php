@@ -18,14 +18,16 @@ class Website extends Model
             # Create Web Username Owner from Name
             $website->username = str_slug($website->name);
             $website->password = substr(str_replace("$", "", Hash::make(str_random(8))), 0, 8);
-            # Check for Unique
-            while (true) {
-                $result = shell_exec("grep -c '^{$website->username}:' /etc/passwd");
-                if ($result == "0\n") {
-                    # Stop While
-                    break;
-                } else {
-                    $website->username .= "-" . substr(Hash::make(str_random(8)), 0, 3);
+            if (env('APP_ENV') != 'local') {
+                # Check for Unique
+                while (true) {
+                    $result = shell_exec("grep -c '^{$website->username}:' /etc/passwd");
+                    if ($result == "0\n") {
+                        # Stop While
+                        break;
+                    } else {
+                        $website->username .= "-" . substr(Hash::make(str_random(8)), 0, 3);
+                    }
                 }
             }
         });
@@ -33,12 +35,6 @@ class Website extends Model
         parent::created(function(Website $website) {
             # Process Create Init Directory
             dispatch(new ProcessNewWebsite($website));
-            # Create Sample Virtual Host Config And Store in Storage
-            if ($website->type == "Laravel") $website->document_root .= "/public";
-
-            # Store apache config
-            $apache_config = view('scripts.sample_apache_config', compact('website'))->render();
-            \Storage::drive('local')->put("{$website->id}-{$website->username}.config", $apache_config);
         });
     }
 

@@ -5,7 +5,7 @@
         AllowOverride all
         Require all granted
         <IfModule mpm_itk_module>
-            AssignUserId {$website->username} {$website->username}
+            AssignUserId {{ $website->username }} {{ $website->username }}
         </IfModule>
     </Directory>
 </VirtualHost>

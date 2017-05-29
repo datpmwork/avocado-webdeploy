@@ -83,7 +83,7 @@
                 </div>
 
                 <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
+                    <a href="{{ url()->action('WebsiteController@index') }}">Websites</a>
                 </div>
             </div>
         </div>
