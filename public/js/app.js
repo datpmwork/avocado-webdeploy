@@ -750,6 +750,7 @@ module.exports = function bind(fn, thisArg) {
 
 window.Vue = __webpack_require__(28);
 window.axios = __webpack_require__(9);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -764,7 +765,8 @@ var website = new Vue({
     data: {
         website: window.website,
         loading: false,
-        expandingLog: false
+        expandingLog: false,
+        socket: null
     },
     methods: {
         saveChange: function saveChange() {
@@ -772,6 +774,18 @@ var website = new Vue({
             _.loading = true;
             _axios.post('/website/store', this.website).then(function (response) {
                 _.loading = false;
+            });
+        },
+        initSocket: function initSocket() {
+            this.socket = io.connect('http://localhost:3000');
+            this.socket.on('connect', function (msg) {
+                console.log("connected to server");
+            });
+            this.socket.on("disconnect", function () {
+                console.log("client disconnected from server");
+            });
+            this.socket.on('event', function (data) {
+                console.log(data);
             });
         }
     },
@@ -792,12 +806,17 @@ var website = new Vue({
                 _.website.apache_config = editor_apache_config.getValue();
             });
 
-            var editor_logs = ace.edit("website-log");
-            editor_logs.setTheme("ace/theme/github");
-            editor_logs.getSession().setMode("ace/mode/sh");
-            editor_logs.getSession().on('change', function () {});
+            $(".logs-viewer").each(function () {
+                var id = "ace-" + Math.floor(Math.random() * 10000);
+                $(this).attr("id", id);
+                var editor_logs = ace.edit(id);
+                editor_logs.setTheme("ace/theme/github");
+                editor_logs.getSession().setMode("ace/mode/sh");
+                editor_logs.getSession().on('change', function () {});
+            });
 
             $('.ui.dropdown').dropdown();
+            $('.menu .item').tab();
             $('.ui.form').form({
                 fields: {
                     servername: 'empty',
@@ -811,6 +830,7 @@ var website = new Vue({
                 }
             });
         });
+        this.initSocket();
     }
 });
 

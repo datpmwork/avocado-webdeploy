@@ -23,3 +23,7 @@ Route::group(["prefix" => "website"], function() {
     Route::get('/show/{id}', 'WebsiteController@show');
 
 });
+
+Route::get('socket', function() {
+    return view('socket');
+});

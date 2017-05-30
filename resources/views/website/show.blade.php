@@ -77,10 +77,21 @@
                 </form>
             </div>
             <div class="column logs" v-bind:class="{ 'four wide': !expandingLog, 'eight wide': expandingLog }">
-                <label>Logs</label>
-                <textarea id="website-log">
-
-                </textarea>
+                <label><b>Logs</b></label>
+                <div class="ui top attached tabular menu">
+                    <a class="item active" data-tab="activity">Activity</a>
+                    <a class="item" data-tab="apache_log">Apache Logs</a>
+                    <a class="item" data-tab="apache_error_log">Error Logs</a>
+                </div>
+                <div class="ui bottom attached tab segment active" data-tab="activity">
+                    <textarea class="logs-viewer"></textarea>
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="apache_log">
+                    <textarea class="logs-viewer"></textarea>
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="apache_error_log">
+                    <textarea class="logs-viewer"></textarea>
+                </div>
                 <button class="ui button basic green" v-on:click="expandingLog = !expandingLog">@{{ expandingLog ? 'Smaller' : 'Larger' }}</button>
             </div>
         </div>
@@ -93,7 +104,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-apache_conf.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-batchfile.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-sh.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
 <script>
     window.website = JSON.parse('{!! $website !!}');
 </script>

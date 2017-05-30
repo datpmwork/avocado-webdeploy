@@ -13,8 +13,13 @@
 .logs {
   display: inline-flex !important;
   flex-direction: column;
-  .ace_editor {
+  .ui.tab.active {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    .ace_editor {
+      flex: 1;
+    }
   }
   button {
     align-self: flex-start;
