@@ -19,7 +19,17 @@ class WebsiteController extends Controller
     }
 
     public function store(Request $request) {
-        Website::create($request->all());
-        return redirect()->action('WebsiteController@index');
+        if ($request->ajax()) {
+            Website::query()->where('id', $request->get('id'))->update($request->all());
+            return response()->json([]);
+        } else {
+            Website::create($request->all());
+            return redirect()->action('WebsiteController@index');
+        }
+    }
+
+    public function show(Request $request, $websiteId) {
+        $website = Website::query()->where('id', $websiteId)->first();
+        return view('website.show', compact('website'));
     }
 }

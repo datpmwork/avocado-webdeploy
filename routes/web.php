@@ -20,5 +20,6 @@ Route::group(["prefix" => "website"], function() {
     Route::get('/', 'WebsiteController@index');
     Route::get('/create', 'WebsiteController@create');
     Route::post('/store', 'WebsiteController@store');
+    Route::get('/show/{id}', 'WebsiteController@show');
 
 });

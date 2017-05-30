@@ -14,6 +14,7 @@
                     <div class="ui segment {{ $website->is_on ? 'green' : 'red' }}">
                         <h3>{{ $website->name }}</h3>
                         <p>Status: {{ $website->is_on ? 'running' : 'stopped' }}</p>
+                        <a class="ui button basic green website-detail" href="{{ url()->action('WebsiteController@show', $website->id) }}">More</a>
                     </div>
                 </div>
             @endforeach

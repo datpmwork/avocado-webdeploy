@@ -1,2 +1,22 @@
 // Fonts
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+
+.ui.modal {
+  transform: translateY(-50%);
+}
+
+.ace_editor {
+  font: 14px/normal 'Consolas', 'source-code-pro', monospace !important;
+  min-height: 160px;
+}
+
+.logs {
+  display: inline-flex !important;
+  flex-direction: column;
+  .ace_editor {
+    flex: 1;
+  }
+  button {
+    align-self: flex-start;
+  }
+}
