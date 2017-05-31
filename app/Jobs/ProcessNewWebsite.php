@@ -71,11 +71,9 @@ class ProcessNewWebsite implements ShouldQueue
             \Storage::drive('local')->put("{$website->id}-{$website->username}.config", $apache_config);
         }
 
-        $website->activity_logs .= "Congrats. Website has been created\n";
-
         # Save Website Changes
         $website->save();
 
-        broadcast(new WebsiteEvent($website));
+        broadcast(new WebsiteEvent($website, WebsiteEvent::CREATED));
     }
 }

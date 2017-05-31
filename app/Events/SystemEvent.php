@@ -2,9 +2,7 @@
 
 namespace App\Events;
 
-use App\Website;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -12,25 +10,21 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class WebsiteEvent implements ShouldBroadcast
+class SystemEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    const CREATED = "Congrats. Website has been created\n";
-    const DOWN = "Website has been stopped\n";
-    const UP = "Website has been started\n";
+    const APACHE_RELOADED = "Apache has been reloaded\n";
 
-    public $website;
+    public $message;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Website $website, $message)
+    public function __construct($message)
     {
-        $website->activity_logs .= $message;
-        $website->save();
-        $this->website = $website;
+        $this->message = $message;
     }
 
     /**
@@ -40,10 +34,10 @@ class WebsiteEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel("website_channel_" . $this->website->id);
+        return new PrivateChannel('system');
     }
 
     public function broadcastAs() {
-        return 'website_event';
+        return 'system_event';
     }
 }

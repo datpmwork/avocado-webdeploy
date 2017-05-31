@@ -6,14 +6,18 @@ let http = require('http').Server(app);
 let io = require('socket.io')(http);
 let Redis = require('ioredis');
 let redis = new Redis();
-redis.subscribe('websites', function(err, count) {
+redis.psubscribe('website_channel_*', 'system', function(err, count) {
 
 });
-redis.on('message', function(channel, message) {
+redis.on('pmessage', function(pattern, channel, message) {
     message = JSON.parse(message);
-    console.log(message);
     io.emit(message.event, channel, message.data);
 });
+
+http.on('connection', (req, socket, head) => {
+
+});
+
 http.listen(3000, function(){
     console.log('Listening on Port 3000');
 });

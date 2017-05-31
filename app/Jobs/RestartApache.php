@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\ApacheRestarted;
+use App\Events\SystemEvent;
 use App\Events\WebsiteEvent;
 use App\Website;
 use Illuminate\Bus\Queueable;
@@ -35,10 +36,14 @@ class RestartApache implements ShouldQueue
     {
         if (env('APP_ENV') != 'local') {
             shell_exec('service apache2 reload');
-            $this->website->activity_logs .= "Apache has been reloaded\n";
-            $this->website->save();
         }
 
-        broadcast(new WebsiteEvent($this->website));
+        broadcast(new SystemEvent(SystemEvent::APACHE_RELOADED));
+
+        if ($this->website->is_on) {
+            broadcast(new WebsiteEvent($this->website, WebsiteEvent::UP));
+        } else {
+            broadcast(new WebsiteEvent($this->website, WebsiteEvent::DOWN));
+        }
     }
 }

@@ -28,8 +28,7 @@ if (document.querySelector("#website")) {
         data: {
             website: {},
             loading: true,
-            expandingLog: false,
-            socket: null
+            expandingLog: true,
         },
         methods: {
             saveChange: function() {
@@ -41,7 +40,11 @@ if (document.querySelector("#website")) {
             },
             listen: function() {
                 let _ = this;
-                Echo.channel('websites').listen('website_event', function(e) {
+                Echo.channel('system').listen('system_event', (e) => {
+                    //TODO: Alert Notify
+                    console.log(e);
+                });
+                Echo.channel('website_channel_' + window.websiteId).listen('website_event', function(e) {
                     _.loading = true;
                     _.website = e.website;
                     _.loading = false;

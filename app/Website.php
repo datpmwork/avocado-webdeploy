@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class Website extends Model
 {
-    protected $fillable = ['name', 'type'];
+    protected $fillable = ['name', 'type', 'is_on', 'checkout', 'deploy_scripts', 'servername'];
 
     public static function boot()
     {

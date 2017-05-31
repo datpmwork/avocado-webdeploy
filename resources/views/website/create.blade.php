@@ -11,6 +11,10 @@
                 <input type="text" name="name" placeholder="Tên Website" required>
             </div>
             <div class="field">
+                <label>Domain</label>
+                <input type="text" name="servername" placeholder="Domain" required>
+            </div>
+            <div class="field">
                 <label>Loại Website</label>
                 <select class="ui search dropdown" name="type" required>
                     <option value="">Chọn loại Website</option>

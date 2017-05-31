@@ -73,7 +73,8 @@
                             <textarea v-model="website.apache_config" id="apache_config"></textarea>
                         </div>
                     </div>
-                    <button class="ui button basic green">Save changes</button>
+                    <a href="{{ url()->action('WebsiteController@index') }}" class="ui button basic primary">Back to list</a>
+                    <button class="ui button green right floated">Save changes</button>
                 </form>
             </div>
             <div class="column logs" v-bind:class="{ 'four wide': !expandingLog, 'eight wide': expandingLog }">
