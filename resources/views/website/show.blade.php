@@ -7,10 +7,10 @@
 @section('content')
     <div class="ui segment" id="website">
         <div class="ui grid">
+            <div class="ui dimmer" v-bind:class="{ active: loading }">
+                <div class="ui loader"></div>
+            </div>
             <div class="column" v-bind:class="{ 'twelve wide': !expandingLog, 'eight wide': expandingLog }">
-                <div class="ui dimmer" v-bind:class="{ active: loading }">
-                    <div class="ui loader"></div>
-                </div>
                 <form class="ui form">
                     <h4 class="ui dividing header">General Infomation</h4>
                     <div class="three fields">
@@ -84,7 +84,7 @@
                     <a class="item" data-tab="apache_error_log">Error Logs</a>
                 </div>
                 <div class="ui bottom attached tab segment active" data-tab="activity">
-                    <textarea class="logs-viewer"></textarea>
+                    <editor v-model="website.activity_logs" mode="apache_conf"></editor>
                 </div>
                 <div class="ui bottom attached tab segment" data-tab="apache_log">
                     <textarea class="logs-viewer"></textarea>
@@ -104,8 +104,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-apache_conf.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-batchfile.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-sh.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
 <script>
-    window.website = JSON.parse('{!! $website !!}');
+    window.websiteId = {!! $website->id !!};
 </script>
 @endpush

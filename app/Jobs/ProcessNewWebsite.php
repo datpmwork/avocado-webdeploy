@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\WebsiteEvent;
 use App\Website;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -38,7 +39,6 @@ class ProcessNewWebsite implements ShouldQueue
             $website->git_root = "/home/{$website->username}/{$website->username}.git";
             # Create Sample Virtual Host Config And Store in Storage
             if ($website->type == "Laravel") $website->document_root .= "/public";
-            $website->save();
         } else {
             $password = env('GLOBAL_PASSWD', '');
             # Create Website User in System
@@ -69,9 +69,13 @@ class ProcessNewWebsite implements ShouldQueue
             # Store apache config
             $apache_config = view('scripts.sample_apache_config', compact('website'))->render();
             \Storage::drive('local')->put("{$website->id}-{$website->username}.config", $apache_config);
-
-            # Save Website Changes
-            $website->save();
         }
+
+        $website->activity_logs .= "Congrats. Website has been created\n";
+
+        # Save Website Changes
+        $website->save();
+
+        broadcast(new WebsiteEvent($website));
     }
 }

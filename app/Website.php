@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Events\WebsiteUpdated;
 use App\Jobs\ProcessNewWebsite;
+use App\Jobs\RestartApache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
@@ -30,6 +32,8 @@ class Website extends Model
                     }
                 }
             }
+
+            $website->activity_logs = "Waiting to initialize...\n";
         });
 
         parent::created(function(Website $website) {
@@ -37,8 +41,10 @@ class Website extends Model
             dispatch(new ProcessNewWebsite($website));
         });
 
-        parent::saved(function(Website $website) {
-
+        parent::updating(function(Website $website) {
+            if ($website->isDirty('is_on')) {
+                dispatch(new RestartApache($website));
+            }
         });
     }
 

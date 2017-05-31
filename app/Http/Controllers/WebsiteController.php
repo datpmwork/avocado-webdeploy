@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\WebsiteUpdated;
 use App\Website;
 use Illuminate\Http\Request;
 
@@ -20,16 +21,21 @@ class WebsiteController extends Controller
 
     public function store(Request $request) {
         if ($request->ajax()) {
-            Website::query()->where('id', $request->get('id'))->update($request->all());
+            $website = Website::query()->where('id', $request->get('id'))->first();
+            $website->update($request->all());
             return response()->json([]);
         } else {
-            Website::create($request->all());
-            return redirect()->action('WebsiteController@index');
+            $website = Website::create($request->all());
+            return redirect()->action('WebsiteController@show', $website->id);
         }
     }
 
     public function show(Request $request, $websiteId) {
         $website = Website::query()->where('id', $websiteId)->first();
-        return view('website.show', compact('website'));
+        if ($request->ajax()) {
+            return response()->json($website);
+        } else {
+            return view('website.show', compact('website'));
+        }
     }
 }

@@ -19,6 +19,7 @@
 
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="{{ asset('semantic/semantic.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
 @stack('before-scripts')
 <script src="{{ asset('js/app.js') }}"></script>
 @stack('scripts')
