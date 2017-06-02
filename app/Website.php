@@ -2,15 +2,21 @@
 
 namespace App;
 
+use App\Events\WebsiteEvent;
 use App\Events\WebsiteUpdated;
+use App\Jobs\ChangeApacheConfig;
+use App\Jobs\ChangeWebsiteBranch;
 use App\Jobs\ProcessNewWebsite;
 use App\Jobs\RestartApache;
+use App\Jobs\ChangeWebsiteConfig;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
 class Website extends Model
 {
-    protected $fillable = ['name', 'type', 'is_on', 'checkout', 'deploy_scripts', 'servername'];
+    protected $fillable = ['name', 'type', 'is_on', 'checkout', 'deploy_scripts', 'apache_config'];
+
+    protected $appends = ['apache_config'];
 
     public static function boot()
     {
@@ -32,24 +38,42 @@ class Website extends Model
                     }
                 }
             }
-
+            $website->deploy_scripts = "# Those scripts below would be executed after a commit is pushed to repository\n";
             $website->activity_logs = "Waiting to initialize...\n";
         });
 
         parent::created(function(Website $website) {
             # Process Create Init Directory
-            dispatch(new ProcessNewWebsite($website));
+            dispatch(new ProcessNewWebsite($website, \Request::get('servername')));
         });
 
-        parent::updating(function(Website $website) {
-            if ($website->isDirty('is_on')) {
+        parent::updated(function(Website $website) {
+            if ($website->isDirty(['is_on'])) {
                 dispatch(new RestartApache($website));
+            }
+            if ($website->isDirty('checkout')) {
+                dispatch(new ChangeWebsiteBranch($website));
+            }
+            if ($website->isDirty('deploy_scripts')) {
+                $deploy_path = "{$website->git_root}/hooks/post-receive";
+                $scripts = view('scripts.post-receive', compact('website'))->render();
+                dispatch(new ChangeWebsiteConfig($website, $deploy_path, $scripts, WebsiteEvent::DEPLOY_CHANGE));
             }
         });
     }
 
     # Mutators
-
+    public function getApacheConfigAttribute() {
+        if ($this->apache_path) {
+            return file_get_contents($this->apache_path);
+        }
+        return "";
+    }
+    public function setApacheConfigAttribute($value) {
+        if ($this->apache_config != $value) {
+            dispatch(new ChangeWebsiteConfig($this, $this->apache_path, $value, WebsiteEvent::APACHE_CHANGE));
+        }
+    }
     # Helpers
 
 }

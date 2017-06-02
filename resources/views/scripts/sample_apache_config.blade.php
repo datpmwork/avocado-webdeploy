@@ -1,5 +1,5 @@
 <VirtualHost *:80>
-    ServerName {{ $website->servername }}
+    ServerName {{ $servername }}
     DocumentRoot "{{ $website->document_root }}"
     <Directory "{{ $website->document_root }}">
         AllowOverride all

@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 34);
+/******/ 	return __webpack_require__(__webpack_require__.s = 38);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -471,7 +471,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(32)))
 
 /***/ }),
 /* 2 */
@@ -772,9 +772,8 @@ module.exports = g;
 
 /***/ }),
 /* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -782,12 +781,12 @@ module.exports = g;
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(28);
+__webpack_require__(29);
 
-window.Vue = __webpack_require__(32);
+window.Vue = __webpack_require__(36);
 window.axios = __webpack_require__(2);
 
-Vue.component('editor', __webpack_require__(39));
+Vue.component('editor', __webpack_require__(33));
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -805,7 +804,7 @@ if (document.querySelector("#website")) {
         data: {
             website: {},
             loading: true,
-            expandingLog: true
+            expandingLog: false
         },
         methods: {
             saveChange: function saveChange() {
@@ -835,20 +834,6 @@ if (document.querySelector("#website")) {
                 _.loading = false;
             });
             $(document).ready(function () {
-                var editor_deploy_scripts = ace.edit("deploy_scripts");
-                editor_deploy_scripts.setTheme("ace/theme/github");
-                editor_deploy_scripts.getSession().setMode("ace/mode/batchfile");
-                editor_deploy_scripts.getSession().on('change', function () {
-                    _.website.deploy_scripts = editor_deploy_scripts.getValue();
-                });
-
-                var editor_apache_config = ace.edit("apache_config");
-                editor_apache_config.setTheme("ace/theme/github");
-                editor_apache_config.getSession().setMode("ace/mode/apache_conf");
-                editor_apache_config.getSession().on('change', function () {
-                    _.website.apache_config = editor_apache_config.getValue();
-                });
-
                 $(".logs-viewer").each(function () {
                     var id = "ace-" + Math.floor(Math.random() * 10000);
                     $(this).attr("id", id);
@@ -858,14 +843,15 @@ if (document.querySelector("#website")) {
                     editor_logs.getSession().on('change', function () {});
                 });
 
-                $('.ui.dropdown').dropdown();
                 $('.menu .item').tab();
+                $('.ui.dropdown').dropdown();
                 $('.ui.form').form({
                     fields: {
                         servername: 'empty',
                         document_root: 'empty',
                         git_root: 'empty',
-                        name: 'empty'
+                        name: 'empty',
+                        checkout: 'empty'
                     },
                     onSuccess: function onSuccess(e) {
                         e.preventDefault();
@@ -1725,10 +1711,52 @@ module.exports = function spread(callback) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo__ = __webpack_require__(29);
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['value', 'mode'],
+    data: function data() {
+        return { id: '', editor: null, val: this.value, lock: false };
+    },
+    methods: {
+        updateValue: function updateValue(value) {}
+    },
+    mounted: function mounted() {
+        var _ = this;
+        this.id = "ace-" + Math.floor(Math.random() * 10000);
+        this.$el.setAttribute('id', this.id);
+        this.editor = ace.edit(this.id);
+        this.editor.setTheme("ace/theme/github");
+        this.editor.getSession().setMode("ace/mode/" + this.mode);
+        this.editor.getSession().on('change', function () {
+            var newValue = _.editor.getValue();
+            _.$emit('input', newValue);
+        });
+    },
+
+    watch: {
+        value: function value(val, oldVal) {
+            if (val != this.editor.getValue()) {
+                this.editor.setValue(val);
+                this.editor.clearSelection();
+            }
+        }
+    }
+});
+
+/***/ }),
+/* 29 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_echo__);
 
-window._ = __webpack_require__(30);
+window._ = __webpack_require__(31);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -1775,7 +1803,7 @@ window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
 });
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 var asyncGenerator = function () {
@@ -2548,7 +2576,7 @@ var Echo = function () {
 module.exports = Echo;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -19637,10 +19665,10 @@ module.exports = Echo;
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(33)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(37)(module)))
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -19830,7 +19858,117 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 32 */
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(34)(
+  /* script */
+  __webpack_require__(28),
+  /* template */
+  __webpack_require__(35),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "D:\\Workspace\\eXNodes\\WebDeploy\\resources\\assets\\js\\components\\editor.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] editor.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4404e770", Component.options)
+  } else {
+    hotAPI.reload("data-v-4404e770", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+// this module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  scopeId,
+  cssModules
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  // inject cssModules
+  if (cssModules) {
+    var computed = Object.create(options.computed || null)
+    Object.keys(cssModules).forEach(function (key) {
+      var module = cssModules[key]
+      computed[key] = function () { return module }
+    })
+    options.computed = computed
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('textarea', {
+    domProps: {
+      "value": _vm.val
+    }
+  })
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-4404e770", module.exports)
+  }
+}
+
+/***/ }),
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29528,7 +29666,7 @@ module.exports = Vue$3;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 33 */
+/* 37 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -29556,169 +29694,12 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 34 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(9);
 module.exports = __webpack_require__(10);
 
-
-/***/ }),
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['value', 'mode'],
-    data: function data() {
-        return { id: '', editor: null, val: this.value };
-    },
-    methods: {
-        updateValue: function updateValue(value) {}
-    },
-    mounted: function mounted() {
-        var _ = this;
-        this.id = "ace-" + Math.floor(Math.random() * 10000);
-        this.$el.setAttribute('id', this.id);
-        this.editor = ace.edit(this.id);
-        this.editor.setReadOnly(true);
-        this.editor.setTheme("ace/theme/github");
-        this.editor.getSession().setMode("ace/mode/" + this.mode);
-        this.editor.getSession().on('change', function () {
-            var newValue = _.editor.getValue();
-            _.$emit('input', newValue);
-        });
-        this.$el.addEventListener('change', function (e) {
-            console.log(e.value);
-        });
-    },
-
-    watch: {
-        value: function value(val) {
-            this.editor.setValue(val);
-            this.editor.clearSelection();
-        }
-    }
-});
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Component = __webpack_require__(40)(
-  /* script */
-  __webpack_require__(38),
-  /* template */
-  __webpack_require__(41),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-Component.options.__file = "D:\\Workspace\\eXNodes\\WebDeploy\\resources\\assets\\js\\components\\editor.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] editor.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-4404e770", Component.options)
-  } else {
-    hotAPI.reload("data-v-4404e770", Component.options)
-  }
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports) {
-
-// this module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  scopeId,
-  cssModules
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  // inject cssModules
-  if (cssModules) {
-    var computed = Object.create(options.computed || null)
-    Object.keys(cssModules).forEach(function (key) {
-      var module = cssModules[key]
-      computed[key] = function () { return module }
-    })
-    options.computed = computed
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('textarea', {
-    domProps: {
-      "value": _vm.val
-    }
-  })
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-4404e770", module.exports)
-  }
-}
 
 /***/ })
 /******/ ]);

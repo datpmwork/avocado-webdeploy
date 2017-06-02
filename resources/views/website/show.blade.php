@@ -24,10 +24,7 @@
                         </div>
                         <div class="field">
                             <label>Checking out Branch</label>
-                            <select class="ui dropdown">
-                                <option value="">Checking out Branch</option>
-                                <option value="master">master</option>
-                            </select>
+                            <input type="text" placeholder="Checkout Branch" v-model="website.checkout" name="checkout">
                         </div>
                     </div>
                     <h4 class="ui dividing header">Server Information</h4>
@@ -48,11 +45,7 @@
                             <input type="text" v-model="website.password" readonly name="password">
                         </div>
                     </div>
-                    <div class="three fields">
-                        <div class="field">
-                            <label>Server Name</label>
-                            <input type="text" v-model="website.servername" name="servername">
-                        </div>
+                    <div class="two fields">
                         <div class="field">
                             <label>Document Root</label>
                             <input type="text" readonly v-model="website.document_root" name="document_root">
@@ -62,16 +55,15 @@
                             <input type="text" readonly v-model="website.git_root" name="git_root">
                         </div>
                     </div>
-                    <h4 class="ui dividing header">Scripts</h4>
-                    <div class="two fields">
-                        <div class="field">
-                            <label for="">Deploy Script</label>
-                            <textarea v-model="website.deploy_scripts" id="deploy_scripts"></textarea>
-                        </div>
-                        <div class="field">
-                            <label for="">Apache Config</label>
-                            <textarea v-model="website.apache_config" id="apache_config"></textarea>
-                        </div>
+                    <div class="ui pointing secondary menu">
+                        <a class="item active" data-tab="deploy-scripts">Deploy Script</a>
+                        <a class="item" data-tab="apache-config">Apache Config</a>
+                    </div>
+                    <div class="ui tab segment active" data-tab="deploy-scripts">
+                        <editor v-model="website.deploy_scripts" mode="batchfile"></editor>
+                    </div>
+                    <div class="ui tab segment" data-tab="apache-config">
+                        <editor v-model="website.apache_config" mode="apache_conf"></editor>
                     </div>
                     <a href="{{ url()->action('WebsiteController@index') }}" class="ui button basic primary">Back to list</a>
                     <button class="ui button green right floated">Save changes</button>

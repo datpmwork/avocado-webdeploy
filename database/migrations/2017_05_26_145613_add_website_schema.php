@@ -28,8 +28,6 @@ class AddWebsiteSchema extends Migration
             $table->string('checkout')->default("master");
             $table->string('document_root')->default('');
 
-            $table->string('deploy_scripts')->default('');
-
             $table->timestamps();
         });
     }
@@ -41,6 +39,6 @@ class AddWebsiteSchema extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('websites');
     }
 }

@@ -20,9 +20,11 @@ class ProcessNewWebsite implements ShouldQueue
      * @return void
      */
     protected $website;
-    public function __construct(Website $website)
+    protected $servername;
+    public function __construct(Website $website, $servername)
     {
         $this->website = $website;
+        $this->servername = $servername;
     }
 
     /**
@@ -34,44 +36,47 @@ class ProcessNewWebsite implements ShouldQueue
     {
         $website = $this->website;
         if (env('APP_ENV') == 'local') {
-            # Create Directory to Store Deploy source and Version Control
-            $website->document_root = "/home/{$website->username}/deploy";
-            $website->git_root = "/home/{$website->username}/{$website->username}.git";
-            # Create Sample Virtual Host Config And Store in Storage
-            if ($website->type == "Laravel") $website->document_root .= "/public";
+            $base_path = storage_path('app') . "/home/{$website->username}";
+            if (!\File::exists($base_path)) {
+                \File::makeDirectory($base_path, 777, true);
+            }
         } else {
+            $base_path = "/home/{$website->username}/";
             $password = env('GLOBAL_PASSWD', '');
             # Create Website User in System
             shell_exec("sshpass -p '{$password}' sudo useradd -p `mkpasswd \"{$website->password}\"` -d /home/\"{$website->username}\" -m -s /bin/bash \"{$website->username}\"");
-
-            # Create Directory to Store Deploy source and Version Control
-            $website->document_root = "/home/{$website->username}/deploy";
-            $website->git_root = "/home/{$website->username}/{$website->username}.git";
-            \File::makeDirectory($website->git_root, 770);
-            \File::makeDirectory($website->document_root, 770);
-
-            # Git Init Bare
-            shell_exec("git init --bare {$website->git_root}");
-
-            # Create Deploy Code
-            $deploy_path = "{$website->git_root}/hooks/post-receive";
-            \File::put($deploy_path, view('scripts.post-receive', compact('website')));
-
-            # Change Folder Permission
-            chmodr("/home/{$website->username}/", 0760);
-            chmod($deploy_path, 0770);
-            chgrpr("/home/{$website->username}/", $website->username);
-            chownr("/home/{$website->username}/", $website->username);
-
-            # Create Sample Virtual Host Config And Store in Storage
-            if ($website->type == "Laravel") $website->document_root .= "/public";
-
-            # Store apache config
-            $apache_config = view('scripts.sample_apache_config', compact('website'))->render();
-            \Storage::drive('local')->put("{$website->id}-{$website->username}.config", $apache_config);
         }
 
-        # Save Website Changes
+        # Create Directory to Store Deploy source and Version Control
+        $website->document_root = "{$base_path}/deploy";
+        $website->git_root = "{$base_path}/{$website->username}.git";
+        \File::makeDirectory($website->git_root, 770);
+        \File::makeDirectory($website->document_root, 770);
+
+        # Git Init Bare
+        shell_exec("git init --bare {$website->git_root}");
+
+        # Create Deploy Code
+        $deploy_path = "{$website->git_root}/hooks/post-receive";
+        \File::put($deploy_path, view('scripts.post-receive', compact('website')));
+
+        # Change Folder Permission
+        chmodr("{$base_path}", 0760);
+        chmod($deploy_path, 0770);
+        chgrpr("{$base_path}", $website->username);
+        chownr("{$base_path}", $website->username);
+
+        # Create Sample Virtual Host Config And Store in Storage
+        if ($website->type == "Laravel") $website->document_root .= "/public";
+
+        # Store apache config
+        $servername = $this->servername;
+        $apache_config = view('scripts.sample_apache_config', compact('website', 'servername'))->render();
+        $apache_path = "apache_config/{$website->id}-{$website->username}.config";
+        \Storage::drive('local')->put($apache_path, $apache_config);
+        $website->apache_path = storage_path('app/' . $apache_path);
+
+            # Save Website Changes
         $website->save();
 
         broadcast(new WebsiteEvent($website, WebsiteEvent::CREATED));

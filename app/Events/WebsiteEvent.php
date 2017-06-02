@@ -19,8 +19,12 @@ class WebsiteEvent implements ShouldBroadcast
     const CREATED = "Congrats. Website has been created\n";
     const DOWN = "Website has been stopped\n";
     const UP = "Website has been started\n";
+    const APACHE_CHANGE = "Apache config has been changed\n";
+    const DEPLOY_CHANGE = "Deploy scripts has been changed\n";
+    const BRANCH_CHANGE = "Default checkout branch has been changed\n";
 
     public $website;
+    protected $message;
     /**
      * Create a new event instance.
      *
@@ -28,7 +32,8 @@ class WebsiteEvent implements ShouldBroadcast
      */
     public function __construct(Website $website, $message)
     {
-        $website->activity_logs .= $message;
+        $this->message = $message;
+        $website->activity_logs .= date('\[d/m/Y H:i:s\]: ') . $message;
         $website->save();
         $this->website = $website;
     }
@@ -44,6 +49,14 @@ class WebsiteEvent implements ShouldBroadcast
     }
 
     public function broadcastAs() {
+        switch ($this->message) {
+            case WebsiteEvent::APACHE_CHANGE:
+                return 'apache_changed';
+            case WebsiteEvent::DEPLOY_CHANGE:
+            case WebsiteEvent::BRANCH_CHANGE:
+                return 'deploy_changed';
+        }
         return 'website_event';
     }
+
 }

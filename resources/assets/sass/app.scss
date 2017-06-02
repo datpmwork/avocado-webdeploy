@@ -5,9 +5,18 @@
   transform: translateY(-50%);
 }
 
+.tab.segment.active {
+  display: flex;
+  padding: 0;
+  .ace_editor {
+    flex: 1;
+    margin: 0;
+  }
+}
+
 .ace_editor {
   font: 14px/normal 'Consolas', 'source-code-pro', monospace !important;
-  min-height: 160px;
+  min-height: 220px;
 }
 
 .logs {
