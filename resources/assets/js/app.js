@@ -74,7 +74,7 @@ if (document.querySelector("#website")) {
                     fields: {
                         servername: 'empty',
                         document_root: 'empty',
-                        git_root: 'empty',
+                        git_remote_url: 'empty',
                         name: 'empty',
                         checkout: 'empty'
                     },

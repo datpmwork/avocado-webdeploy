@@ -35,6 +35,7 @@ class ProcessNewWebsite implements ShouldQueue
     public function handle()
     {
         $website = $this->website;
+        $ip = env('APP_IP', '127.0.0.1');
         if (env('APP_ENV') == 'local') {
             $base_path = storage_path('app') . "/home/{$website->username}";
             if (!\File::exists($base_path)) {
@@ -50,6 +51,7 @@ class ProcessNewWebsite implements ShouldQueue
         # Create Directory to Store Deploy source and Version Control
         $website->document_root = "{$base_path}/deploy";
         $website->git_root = "{$base_path}/{$website->username}.git";
+        $website->git_remote_url = "{$website->username}@{$ip}:{$website->username}.git";
         \File::makeDirectory($website->git_root, 770);
         \File::makeDirectory($website->document_root, 770);
 
@@ -71,7 +73,7 @@ class ProcessNewWebsite implements ShouldQueue
 
         # Store apache config
         $servername = $this->servername;
-        $apache_config = view('scripts.sample_apache_config', compact('website', 'servername'))->render();
+        $apache_config = view('scripts.sample_apache_config', compact('website', 'servername', 'base_path'))->render();
         $apache_path = "apache_config/{$website->id}-{$website->username}.config";
         \Storage::drive('local')->put($apache_path, $apache_config);
         $website->apache_path = storage_path('app/' . $apache_path);

@@ -51,8 +51,8 @@
                             <input type="text" readonly v-model="website.document_root" name="document_root">
                         </div>
                         <div class="field">
-                            <label>Git Root</label>
-                            <input type="text" readonly v-model="website.git_root" name="git_root">
+                            <label>Git Remote URL</label>
+                            <input type="text" readonly v-model="website.git_remote_url" name="git_remote_url">
                         </div>
                     </div>
                     <div class="ui pointing secondary menu">

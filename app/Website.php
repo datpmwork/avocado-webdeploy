@@ -16,7 +16,7 @@ class Website extends Model
 {
     protected $fillable = ['name', 'type', 'is_on', 'checkout', 'deploy_scripts', 'apache_config'];
 
-    protected $appends = ['apache_config'];
+    protected $appends = ['apache_config', 'apache_error_log_path'];
 
     public static function boot()
     {
@@ -73,6 +73,22 @@ class Website extends Model
         if ($this->apache_config != $value) {
             dispatch(new ChangeWebsiteConfig($this, $this->apache_path, $value, WebsiteEvent::APACHE_CHANGE));
         }
+    }
+    public function getApacheErrorLogPathAttribute() {
+        $config = $this->apache_config;
+        preg_match_all("/(?<=ErrorLog )(.*)(?=\n)/", $config, $matches);
+        if (isset($matches[1])) {
+            return trim(array_first($matches[1]));
+        }
+        return null;
+    }
+    public function getApacheCustomLogPathAttribute() {
+        $config = $this->apache_config;
+        preg_match_all("/(?<=CustomLog )(.*)(?= combined|)/", $config, $matches);
+        if (isset($matches[1])) {
+            return trim(array_first($matches[1]));
+        }
+        return null;
     }
     # Helpers
 
