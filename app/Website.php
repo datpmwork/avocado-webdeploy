@@ -39,7 +39,7 @@ class Website extends Model
                 }
             }
             $website->deploy_scripts = "# Those scripts below would be executed after a commit is pushed to repository\n";
-            $website->activity_logs = "Waiting to initialize...\n";
+            $website->activity_logs = "Waiting for initialization...\n";
         });
 
         parent::created(function(Website $website) {
