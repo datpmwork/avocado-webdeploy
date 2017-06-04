@@ -14,7 +14,7 @@ class AddWebsiteGitRemoteUrl extends Migration
     public function up()
     {
         Schema::table('websites', function (Blueprint $table) {
-            $table->string('git_remote_url')->after('git_root');
+            $table->string('git_remote_url')->after('git_root')->nullable();
         });
     }
 
