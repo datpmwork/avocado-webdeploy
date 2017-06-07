@@ -26,3 +26,27 @@ BROADCAST_DRIVER=redis
 Follow [this instruction](https://gist.github.com/danharper/9136507) to install supervisor 
 
 Note: Please run supervisor under root user for all privileges
+
+Create a supervisor config file with content as below
+```
+[program:webdeploy]
+process_name=%(program_name)s_%(process_num)02d
+command=php [Your Actual Website Directory]/artisan queue:work --sleep=3 --tries=3 --daemon
+autostart=true
+autorestart=true
+user=root
+numprocs=2
+redirect_stderr=true
+stdout_logfile=[Your Actual Website Directory]/storage/logs/worker.log
+
+[program:webdeploy_broadcaster]
+process_name=%(program_name)s_%(process_num)02d
+command=node [Your Actual Website Directory]/socket.js
+autostart=true
+autorestart=true
+user=root
+numprocs=1
+redirect_stderr=true
+stdout_logfile=[Your Actual Website Directory]/storage/logs/socket.log
+
+```
