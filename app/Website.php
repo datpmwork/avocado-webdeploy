@@ -92,7 +92,7 @@ class Website extends Model
         return null;
     }
     public function getApacheFileAttribute() {
-        return "{$this->id}-{$this->username}.config";
+        return "{$this->id}-{$this->username}.conf";
     }
     # Helpers
 

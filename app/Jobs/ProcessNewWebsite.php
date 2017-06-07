@@ -74,7 +74,7 @@ class ProcessNewWebsite implements ShouldQueue
         # Store apache config
         $servername = $this->servername;
         $apache_config = view('scripts.sample_apache_config', compact('website', 'servername', 'base_path'))->render();
-        $apache_path = "apache_config/{$website->id}-{$website->username}.config";
+        $apache_path = "apache_config/{$website->id}-{$website->username}.conf";
         \Storage::drive('local')->put($apache_path, $apache_config);
         $website->apache_path = storage_path('app/' . $apache_path);
 
