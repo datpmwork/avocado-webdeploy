@@ -14,7 +14,7 @@ class AddWebsiteLogs extends Migration
     public function up()
     {
         Schema::table('websites', function (Blueprint $table) {
-            $table->longText('activity_logs')->after('deploy_scripts')->nullable();
+            $table->longText('activity_logs')->nullable();
         });
     }
 
