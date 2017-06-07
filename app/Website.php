@@ -9,6 +9,7 @@ use App\Jobs\ChangeWebsiteBranch;
 use App\Jobs\ProcessNewWebsite;
 use App\Jobs\RestartApache;
 use App\Jobs\ChangeWebsiteConfig;
+use App\Jobs\SwitchWebsiteState;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
@@ -49,7 +50,7 @@ class Website extends Model
 
         parent::updated(function(Website $website) {
             if ($website->isDirty(['is_on'])) {
-                dispatch(new RestartApache($website));
+                dispatch(new SwitchWebsiteState($website));
             }
             if ($website->isDirty('checkout')) {
                 dispatch(new ChangeWebsiteBranch($website));
