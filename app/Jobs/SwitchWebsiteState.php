@@ -33,9 +33,9 @@ class SwitchWebsiteState implements ShouldQueue
     {
         if (env('APP_ENV') != 'local') {
             if ($this->website->is_on) {
-                \File::link($this->website->apache_path, '/etc/apache2/site-enabled/' . $this->website->apache_file);
+                \File::link($this->website->apache_path, '/etc/apache2/sites-enabled' . $this->website->apache_file);
             } else {
-                unlink('/etc/apache2/site-enabled/' . $this->website->apache_file);
+                unlink('/etc/apache2/sites-enabled' . $this->website->apache_file);
             }
             dispatch(new RestartApache($this->website));
         }
