@@ -42,10 +42,9 @@ class ProcessNewWebsite implements ShouldQueue
                 \File::makeDirectory($base_path, 777, true);
             }
         } else {
-            $base_path = "/home/{$website->username}/";
-            $password = env('GLOBAL_PASSWD', '');
+            $base_path = "/home/{$website->username}";
             # Create Website User in System
-            shell_exec("sshpass -p '{$password}' sudo useradd -p `mkpasswd \"{$website->password}\"` -d /home/\"{$website->username}\" -m -s /bin/bash \"{$website->username}\"");
+            shell_exec("sudo useradd -p `mkpasswd \"{$website->password}\"` -d /home/\"{$website->username}\" -m -s /bin/bash \"{$website->username}\"");
         }
 
         # Create Directory to Store Deploy source and Version Control
@@ -74,7 +73,7 @@ class ProcessNewWebsite implements ShouldQueue
         # Store apache config
         $servername = $this->servername;
         $apache_config = view('scripts.sample_apache_config', compact('website', 'servername', 'base_path'))->render();
-        $apache_path = "apache_config/{$website->id}-{$website->username}.conf";
+        $apache_path = "apache_config/{$website->id}-{$website->username}.config";
         \Storage::drive('local')->put($apache_path, $apache_config);
         $website->apache_path = storage_path('app/' . $apache_path);
 
