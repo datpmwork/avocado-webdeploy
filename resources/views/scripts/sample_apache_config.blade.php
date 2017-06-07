@@ -2,8 +2,8 @@
     ServerName {{ $servername }}
     DocumentRoot "{{ $website->document_root }}"
 
-    ErrorLog {{ $base_path }}/{{ $website->username }}-error.log
-    CustomLog {{ $base_path }}/{{ $website->username }}-access.log combined
+    ErrorLog {{ $base_path }}{{ $website->username }}-error.log
+    CustomLog {{ $base_path }}{{ $website->username }}-access.log combined
 
     <Directory "{{ $website->document_root }}">
         AllowOverride all
