@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::group(["prefix" => "website"], function() {
+Route::group(["prefix" => "website", "middleware" => "auth"], function() {
 
     Route::get('/', 'WebsiteController@index');
     Route::get('/create', 'WebsiteController@create');
@@ -27,3 +27,6 @@ Route::group(["prefix" => "website"], function() {
 Route::get('socket', function() {
     return view('socket');
 });
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
