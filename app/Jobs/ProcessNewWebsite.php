@@ -71,6 +71,13 @@ class ProcessNewWebsite implements ShouldQueue
         # Create Sample Virtual Host Config And Store in Storage
         if ($website->type == "Laravel") $website->document_root .= "/public";
 
+        # Create .ssh folder
+        $ssh_folder = "/home/{$website->username}/.ssh";
+        \File::makeDirectory($ssh_folder, 700, true, true);
+        file_put_contents("{$ssh_folder}/.authorized_keys", $website->authorized_keys);
+        chown("{$ssh_folder}/.authorized_keys", $website->username);
+        chmod("{$ssh_folder}/.authorized_keys", 600);
+
         # Store apache config
         $servername = $this->servername;
         $apache_config = view('scripts.sample_apache_config', compact('website', 'servername', 'base_path'))->render();
@@ -78,7 +85,7 @@ class ProcessNewWebsite implements ShouldQueue
         \Storage::drive('local')->put($apache_path, $apache_config);
         $website->apache_path = storage_path('app/' . $apache_path);
 
-            # Save Website Changes
+        # Save Website Changes
         $website->save();
 
         broadcast(new WebsiteEvent($website, WebsiteEvent::CREATED));
