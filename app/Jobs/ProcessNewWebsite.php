@@ -49,6 +49,7 @@ class ProcessNewWebsite implements ShouldQueue
 
         # Create Directory to Store Deploy source and Version Control
         $website->document_root = "{$base_path}/deploy";
+        $website->deploy_path = $website->document_root;
         $website->git_root = "{$base_path}/{$website->username}.git";
         $website->git_remote_url = "{$website->username}@{$ip}:{$website->username}.git";
         \File::makeDirectory($website->git_root, 770);
@@ -58,12 +59,12 @@ class ProcessNewWebsite implements ShouldQueue
         shell_exec("git init --bare {$website->git_root}");
 
         # Create Deploy Code
-        $deploy_path = "{$website->git_root}/hooks/post-receive";
-        \File::put($deploy_path, view('scripts.post-receive', compact('website')));
+        $hook_path = "{$website->git_root}/hooks/post-receive";
+        \File::put($hook_path, view('scripts.post-receive', compact('website')));
 
         # Change Folder Permission
         chmodr("{$base_path}", 0760);
-        chmod($deploy_path, 0770);
+        chmod($hook_path, 0770);
         chgrpr("{$base_path}", $website->username);
         chownr("{$base_path}", $website->username);
 

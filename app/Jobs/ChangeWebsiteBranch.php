@@ -34,8 +34,8 @@ class ChangeWebsiteBranch implements ShouldQueue
     {
         if (env('APP_ENV') != 'local') {
             # Update Deploy Code
-            $deploy_path = "{$this->website->git_root}/hooks/post-receive";
-            \File::put($deploy_path, view('scripts.post-receive', ['website' => $this->website]));
+            $hook_path = "{$this->website->git_root}/hooks/post-receive";
+            \File::put($hook_path, view('scripts.post-receive', ['website' => $this->website]));
         }
 
         broadcast(new WebsiteEvent($this->website, WebsiteEvent::BRANCH_CHANGE));
