@@ -34,7 +34,7 @@ class RestartApache implements ShouldQueue
      */
     public function handle()
     {
-        if (env('APP_ENV') != 'local') {
+        if (env('APP_ENV') == 'production') {
             shell_exec('service apache2 reload');
         }
 

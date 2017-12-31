@@ -1,5 +1,5 @@
 <VirtualHost *:80>
-    ServerName {{ $servername }}
+    ServerName {{ $website->servername }}
     DocumentRoot "{{ $website->document_root }}"
 
     ErrorLog {{ $base_path }}/{{ $website->username }}-error.log

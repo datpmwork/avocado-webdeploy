@@ -6,7 +6,7 @@ use App\Events\WebsiteEvent;
 use App\Events\WebsiteUpdated;
 use App\Jobs\ChangeApacheConfig;
 use App\Jobs\ChangeWebsiteBranch;
-use App\Jobs\ProcessNewWebsite;
+use App\Jobs\CreateNewRepository;
 use App\Jobs\RestartApache;
 use App\Jobs\ChangeWebsiteConfig;
 use App\Jobs\SwitchWebsiteState;
@@ -45,7 +45,7 @@ class Website extends Model
 
         parent::created(function(Website $website) {
             # Process Create Init Directory
-            dispatch(new ProcessNewWebsite($website, \Request::get('servername')));
+            dispatch(new CreateNewRepository($website));
         });
 
         parent::updated(function(Website $website) {

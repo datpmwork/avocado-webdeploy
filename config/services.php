@@ -34,5 +34,10 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
+    
+    'gitlab' => [
+        'token' => 'xcPWyPm1dsyCzcy6yj9w',
+        'namespace' => '2247814'
+    ]
 
 ];
